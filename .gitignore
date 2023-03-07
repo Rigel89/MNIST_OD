@@ -1,4 +1,5 @@
 /MNIST_OD
 /MNIST_dataset
 .ipynb*
+.virtual*
 #/.ipynb_checkpoints
