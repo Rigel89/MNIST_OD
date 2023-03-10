@@ -1,0 +1,10 @@
+yolov1:
+https://www.maskaravivek.com/post/yolov1/
+https://github.com/FMsunyh/keras-yolo/blob/master/core/layers/_losses.py
+https://medium.com/mlearning-ai/object-detection-explained-yolo-v1-fb4bcd3d87a1
+https://github.com/tanjeffreyz/yolo-v1/blob/main/loss.py (loss)
+https://arxiv.org/pdf/1506.02640.pdf (official)
+https://raw.githubusercontent.com/experiencor/keras-yolo3/master/yolo3_one_file_to_detect_them_all.py
+yolov3:
+https://machinelearningmastery.com/how-to-perform-object-detection-with-yolov3-in-keras/
+pasca voc reader:
