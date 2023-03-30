@@ -21,13 +21,14 @@ Created on Sat Mar 25 04:25:31 2023
 #%% Importing libraries
 from yoloGenerator.yoloNN import blockGenerator, yoloReshape
 import tensorflow as tf
+import numpy as np
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, MaxPooling2D
 from tensorflow.keras.layers import LeakyReLU
 from yoloGenerator.config import *
 
 
-ANCHORS = np.array(ANCHORS)
+ANCHORS = np.array(YOLO_ANCHORS)
 STRIDES = np.array(YOLO_STRIDES)
 
 #%% NN basic blocks
@@ -44,7 +45,7 @@ def darknet19(input_shape):
     
     # Generating the NN
     inputs = Input(shape=input_shape)
-    darknet19_tinny1 = blockGenerator((416,416,1), blocks_dict1)
+    darknet19_tinny1 = blockGenerator(input_shape, blocks_dict1)
     darknet19_tinny2 = blockGenerator((13,13,1), blocks_dict2)
     darknet19_tinny3 = blockGenerator((13,13,1), blocks_dict3)
     out1=darknet19_tinny1(inputs)
@@ -56,7 +57,8 @@ def darknet19(input_shape):
                       padding='same',
                       name='darknet19_last_Maxpool')(out2)
     out2=darknet19_tinny3(out2)
-    out1, out2 = Model(inputs=[inputs], outputs=[out1,out2])
+    model = Model(inputs=[inputs], outputs=[out1,out2])
+    out1, out2 = model(inputs)
     return out1, out2
 
 
@@ -75,7 +77,8 @@ def YOLOv3_tiny(input_shape, no_class, no_anchors):
     yolofaseS1 = blockGenerator((13,13,1), blocks_dict5)
     smallBNB = yolofaseS1(out2)
     smallBNB_shape = tf.shape(smallBNB)
-    smallBNB = tf.image.resize(smallBNB, (int(smallBNB_shape[1] * 2), int(smallBNB_shape[2] * 2)),
+    # print(smallBNB_shape)
+    smallBNB = tf.image.resize(smallBNB, (13*2,13*2),
                                method='nearest')
     smallBNB = tf.concat([smallBNB, out1], axis=-1)
     yolofaseS2 = blockGenerator((26,26,1), blocks_dict6)
@@ -83,14 +86,15 @@ def YOLOv3_tiny(input_shape, no_class, no_anchors):
     return [smallBNB, largeBNB]
     
     
-def Create_Yolov3(input_size=YOLO_INPUT_SIZE, channels=YOLO_CHANNELS,
-                  training=False, NUM_CLASSES=NUMBER_OF_CLASSES):
-    NUM_CLASS = int(NUM_CLASSES)
-    input_layer  = Input([input_size, input_size, channels])
+def Create_Yolov3(input_size=YOLO_INPUT_SIZE, channels=YOLO_CHANNELS, grid_size=YOLO_STRIDES,
+                  anchors=ANCHORS, training=False, no_classes=NUMBER_OF_CLASSES):
+    no_classes = int(no_classes)
+    no_anchors = tf.shape(anchors)[1]
+    input_layer  = (input_size, input_size, channels)
 
-    conv_tensors = YOLOv3_tiny(input_layer, NUM_CLASS)
-    decoder = yoloReshape(image_size=YOLO_INPUT_SIZE, grid_size=YOLO_STRIDES,
-                 anchors=ANCHORS, no_class=NUMBER_OF_CLASSES)
+    conv_tensors = YOLOv3_tiny(input_layer, no_classes, no_anchors)
+    decoder = yoloReshape(input_layer, grid_size,
+                          anchors, no_classes)
     output_tensors = []
     for i, conv_tensor in enumerate(conv_tensors):
         pred_tensor = decoder(conv_tensor)
