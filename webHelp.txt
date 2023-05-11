@@ -6,5 +6,8 @@ https://github.com/tanjeffreyz/yolo-v1/blob/main/loss.py (loss)
 https://arxiv.org/pdf/1506.02640.pdf (official)
 https://raw.githubusercontent.com/experiencor/keras-yolo3/master/yolo3_one_file_to_detect_them_all.py
 yolov3:
+https://pylessons.com/YOLOv3-TF2-Tiny
+https://www.tandfonline.com/doi/pdf/10.1080/21642583.2021.1901156#:~:text=The%20loss%20function%20of%20the,truth%20and%20the%20predicted%20boxes.
 https://machinelearningmastery.com/how-to-perform-object-detection-with-yolov3-in-keras/
-pasca voc reader:
+yolov4:
+https://arxiv.org/ftp/arxiv/papers/2011/2011.04244.pdf
