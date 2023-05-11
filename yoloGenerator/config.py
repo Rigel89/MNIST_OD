@@ -31,7 +31,7 @@ YOLO_ANCHORS                = [[[10, 14],  [23, 27],   [37, 58]],
 
 # Dataset creation configuration
 
-MAIN_PATH                   = 'C:\\Users\\javie\\Python\\MNIST_OD'
+MAIN_PATH                   = '.\\'
 BATCH_DATASET               = 5
 FETCH_DATASET               = 6
 SHUFFLE_DATASET             = 600
